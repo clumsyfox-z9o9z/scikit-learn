@@ -1,3 +1,5 @@
+import numpy as np
+
 from .base import BaseMixture
 
 
@@ -46,7 +48,9 @@ class BernoulliMixture(BaseMixture):
             Logarithm of the posterior probabilities (or responsibilities) of
             the point of each sample in X.
         """
-        pass
+        n_samples, _ = X.shape
+        self.weights_, self.means_ = (_estimate_bernoulli_parameters(X, np.exp(log_resp)))
+        self.weights_ /= n_samples
 
     def _check_is_fitted(self):
         pass
