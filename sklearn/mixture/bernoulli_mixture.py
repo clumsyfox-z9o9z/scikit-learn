@@ -3,6 +3,18 @@ from .base import BaseMixture
 
 class BernoulliMixture(BaseMixture):
 
+    def __init__(self, n_components=1, tol=1e-3, reg_covar=1e-6,
+                 max_iter=100, n_init=1, init_params='kmeans',
+                 weights_init=None, means_init=None, precisions_init=None,
+                 random_state=None, warm_start=False,
+                 verbose=0, verbose_interval=10):
+        super(BernoulliMixture).__init__(
+            n_components=n_components, tol=tol, reg_covar=reg_covar,
+            max_iter=max_iter, n_init=n_init, init_params=init_params,
+            random_state=random_state, warm_start=warm_start,
+            verbose=verbose, verbose_interval=verbose_interval)
+
+
     def _check_parameters(self, X):
         """Check initial parameters of the derived class.
 
