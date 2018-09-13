@@ -3,6 +3,30 @@ import numpy as np
 from .base import BaseMixture
 
 
+def _estimate_bernoulli_parameters(X, resp):
+    """Estimate the Bernoulli distribution parameters.
+
+    Parameters
+    ----------
+    X : array-like, shape (n_samples, n_features)
+        The input data array.
+
+    resp : array-like, shape (n_samples, n_components)
+        The responsibilities for each data sample in X.
+
+    Returns
+    -------
+    nk : array-like, shape (n_components,)
+        The numbers of data samples in the current components.
+
+    means : array-like, shape (n_components, n_features)
+        The centers of the current components.
+    """
+    nk = resp.sum(axis=0) + 10 * np.finfo(resp.dtype).eps
+    means = np.dot(resp.T, X) / nk[:, np.newaxis]
+    return nk, means
+
+
 class BernoulliMixture(BaseMixture):
 
     def __init__(self, n_components=1, tol=1e-3, reg_covar=1e-6,
