@@ -1,6 +1,7 @@
 import numpy as np
 
 from .base import BaseMixture
+from ..utils.validation import check_is_fitted
 
 
 def _estimate_bernoulli_parameters(X, resp):
@@ -103,7 +104,7 @@ class BernoulliMixture(BaseMixture):
         self.weights_ /= n_samples
 
     def _check_is_fitted(self):
-        pass
+        check_is_fitted(self, ['weights_', 'means_'])
 
     def _get_parameters(self):
         return (self.weights_, self.means_)
