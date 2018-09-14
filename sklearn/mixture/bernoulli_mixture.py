@@ -106,10 +106,10 @@ class BernoulliMixture(BaseMixture):
         pass
 
     def _get_parameters(self):
-        pass
+        return (self.weights_, self.means_)
 
     def _set_parameters(self, params):
-        pass
+        (self.weights_, self.means_) = params
 
     def _estimate_log_weights(self):
         return np.log(self.weights_)
