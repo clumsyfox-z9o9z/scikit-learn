@@ -1,7 +1,39 @@
 import numpy as np
 
-from .base import BaseMixture
+from .base import BaseMixture, _check_shape
+from ..utils import check_array
 from ..utils.validation import check_is_fitted
+
+
+def _check_weigths(weights, n_components):
+    """ Check the user provided 'weights'.
+
+    Parameters
+    ----------
+    weights : array-like, shape (n_components,)
+        The proportions of components of each mixture.
+
+    n_components : int
+        Number of components
+
+    Returns
+    -------
+    weights : array, shape (n_components,)
+    """
+    weights = check_array(weights, dtype=[np.float64, np.float32], ensure_2d=False)
+    _check_shape(weights, (n_components,), 'weights')
+
+    # check range
+    if(any(np.less_equal(weights, 0.)) or any(np.greater(weights, 1.))):
+        raise ValueError("The parameter 'weights' should be in the range "
+                         "(0, 1], but got max value %.5f, min value %.5f"
+                         % (np.min(weights), np.max(weights)))
+
+    # check normalization
+    if not np.allclose(np.abs(1. - np.sum(weights)), 0.):
+        raise ValueError("The parameter 'weights' should be normalized, "
+                         "but got sum(weights) = %.5f" % np.sum(weights))
+    return weights
 
 
 def _estimate_bernoulli_parameters(X, resp):
