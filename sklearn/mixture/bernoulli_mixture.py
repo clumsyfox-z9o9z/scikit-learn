@@ -67,15 +67,16 @@ class BernoulliMixture(BaseMixture):
             random_state=random_state, warm_start=warm_start,
             verbose=verbose, verbose_interval=verbose_interval)
 
-
     def _check_parameters(self, X):
-        """Check initial parameters of the derived class.
+        """Check if the initial Bernoulli mixture parameters are well defined."""
+        _, n_features = X.shape
 
-        Parameters
-        ----------
-        X : array-like, shape  (n_samples, n_features)
-        """
-        pass
+        if self.weights_init is not None:
+            self.weights_init = _check_weigths(self.weights_init, self.n_components)
+
+        if self.means_init is not None:
+            self.means_init = _check_means(self.means_init,
+                                           self.n_components, n_features)
 
     def _initialize(self, X, resp):
         """Initialize the model parameters of the derived class.
