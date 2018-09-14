@@ -24,7 +24,7 @@ def _check_weigths(weights, n_components):
     _check_shape(weights, (n_components,), 'weights')
 
     # check range
-    if(any(np.less(weights, 0.)) or any(np.greater(weights, 1.))):
+    if any(np.less(weights, 0.)) or any(np.greater(weights, 1.)):
         raise ValueError("The parameter 'weights' should be in the range "
                          "[0, 1], but got max value %.5f, min value %.5f"
                          % (np.min(weights), np.max(weights)))
@@ -37,7 +37,32 @@ def _check_weigths(weights, n_components):
 
 
 def _check_means(means, n_components, n_features):
-    pass
+    """Validate the provided 'means'.
+
+    Parameters
+    ----------
+    means : array-like, shape (n_components, n_features)
+        The centers of the current components.
+
+    n_components : int
+        Number of components.
+
+    n_features : int
+        Number of features.
+
+    Returns
+    -------
+    means : array, (n_components, n_features)
+    """
+    means = check_array(means, dtype=[np.float64, np.float32], ensure_2d=False)
+    _check_shape(means, (n_components, n_features), 'means')
+
+    if any(np.less_equal(means), 0.) or any(np.greater_equal(means, 1.)):
+        raise ValueError("The parameter 'means' should be in the range "
+                         "(0, 1), but got max value %.5f, min value %.5f"
+                         % (np.min(means), np.max(means)))
+    return means
+
 
 def _estimate_bernoulli_parameters(X, resp):
     """Estimate the Bernoulli distribution parameters.
