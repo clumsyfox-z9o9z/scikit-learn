@@ -27,6 +27,32 @@ def _estimate_bernoulli_parameters(X, resp):
     return nk, means
 
 
+def _estimate_log_bernoulli_prob(X, means):
+    """Estimate the log Bernoulli probability
+
+    Parameters
+    ----------
+    X : array-like, shape (n_samples, n_features)
+
+    means : array-like, shape (n_components, n_features)
+
+    Returns
+    -------
+    log_prob : array, shape (n_samples, n_components)
+    """
+    n_samples, n_features = X.shape
+    n_components, _ = means.shape
+
+    log_prob = np.empty((n_samples, n_components))
+
+    for k in range(n_components):
+        for n in range(n_samples):
+            y = X[n, :] * np.log(means[k, :]) + (1 - X[n, :]) * np.log(1 - means[k, :])
+            log_prob[n, k] = np.sum(y, axis=1)
+
+    return log_prob
+
+
 class BernoulliMixture(BaseMixture):
 
     def __init__(self, n_components=1, tol=1e-3, reg_covar=1e-6,
@@ -86,25 +112,7 @@ class BernoulliMixture(BaseMixture):
         pass
 
     def _estimate_log_weights(self):
-        """Estimate log-weights in EM algorithm, E[ log pi ] in VB algorithm.
-
-        Returns
-        -------
-        log_weight : array, shape (n_components, )
-        """
-        pass
+        return np.log(self.weights_)
 
     def _estimate_log_prob(self, X):
-        """Estimate the log-probabilities log P(X | Z).
-
-        Compute the log-probabilities per each component for each sample.
-
-        Parameters
-        ----------
-        X : array-like, shape (n_samples, n_features)
-
-        Returns
-        -------
-        log_prob : array, shape (n_samples, n_component)
-        """
-        pass
+        return _estimate_log_bernoulli_prob(X, self.means_)
