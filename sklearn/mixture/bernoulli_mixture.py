@@ -139,7 +139,7 @@ class BernoulliMixture(BaseMixture):
                                            self.n_components, n_features)
 
     def _initialize(self, X, resp):
-        """Initialize the model parameters of the derived class.
+        """Initialization of the Bernoulli mixture parameters.
 
         Parameters
         ----------
@@ -147,7 +147,15 @@ class BernoulliMixture(BaseMixture):
 
         resp : array-like, shape (n_samples, n_components)
         """
-        pass
+        n_samples, _ = X.shape
+
+        weights, means, covariances = _estimate_bernoulli_parameters(
+            X, resp)
+        weights /= n_samples
+
+        self.weights_ = (weights if self.weights_init is None
+                         else self.weights_init)
+        self.means_ = means if self.means_init is None else self.means_init
 
     def _m_step(self, X, log_resp):
         """M step.
