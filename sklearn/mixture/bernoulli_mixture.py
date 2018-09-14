@@ -24,9 +24,9 @@ def _check_weigths(weights, n_components):
     _check_shape(weights, (n_components,), 'weights')
 
     # check range
-    if(any(np.less_equal(weights, 0.)) or any(np.greater(weights, 1.))):
+    if(any(np.less(weights, 0.)) or any(np.greater(weights, 1.))):
         raise ValueError("The parameter 'weights' should be in the range "
-                         "(0, 1], but got max value %.5f, min value %.5f"
+                         "[0, 1], but got max value %.5f, min value %.5f"
                          % (np.min(weights), np.max(weights)))
 
     # check normalization
@@ -35,6 +35,9 @@ def _check_weigths(weights, n_components):
                          "but got sum(weights) = %.5f" % np.sum(weights))
     return weights
 
+
+def _check_means(means, n_components, n_features):
+    pass
 
 def _estimate_bernoulli_parameters(X, resp):
     """Estimate the Bernoulli distribution parameters.
